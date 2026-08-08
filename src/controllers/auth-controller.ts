@@ -2,8 +2,9 @@ import type { Request, Response } from "express";
 import z from "zod";
 import prisma from "../util/db.js";
 import { compare, hash } from "bcrypt";
-import { sign } from "jsonwebtoken";import { env } from "../util/env.js";
- 'jsonwebtoken';
+import { sign } from "jsonwebtoken";
+import { env } from "../util/env.js";
+import type { payloadType } from "../types/payload.js";
 
 class AuthController {
 
@@ -86,7 +87,7 @@ class AuthController {
             const token = sign({
                 id: isRegistered.id,
                 role: isRegistered.role
-            }, env.SECRET_KEY);
+            } as payloadType , env.SECRET_KEY);
 
             res.cookie("token", token, {
                 httpOnly: true,
