@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import z from "zod";
 import prisma from "../util/db.js";
 import { compare, hash } from "bcrypt";
-import { sign } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { env } from "../util/env.js";
 import type { payloadType } from "../types/payload.js";
 
@@ -85,7 +85,7 @@ class AuthController {
                 });
             }
 
-            const token = sign({
+            const token = jwt.sign({
                 id: isRegistered.id,
                 role: isRegistered.role
             } as payloadType , env.SECRET_KEY);
