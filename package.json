@@ -4,7 +4,9 @@
   "description": "",
   "main": "/src/server.ts",
   "scripts": {
-    "dev": ""
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/index.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "Martin Langa",
