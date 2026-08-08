@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { verify } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { env } from "../util/env.js";
 import type { payloadType } from "../types/payload.js";
 
@@ -15,7 +15,7 @@ export function authenticated(req: Request, res: Response, next: NextFunction) {
     }
 
     try{
-        const payload = verify(token, env.SECRET_KEY) as payloadType;
+        const payload = jwt.verify(token, env.SECRET_KEY) as payloadType;
 
         if(!payload){
             return res.status(401).json({
