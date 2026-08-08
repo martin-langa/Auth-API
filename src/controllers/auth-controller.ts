@@ -5,7 +5,7 @@ import { hash } from "bcrypt";
 
 class AuthController {
 
-    signIn = async (req: Request, res: Response) => {
+    signUp = async (req: Request, res: Response) => {
 
         try{
             const bodySchema = z.object({
@@ -56,7 +56,7 @@ class AuthController {
         }
     }
     
-    signUp = async (req: Request, res: Response) => {
+    signiIn = async (req: Request, res: Response) => {
 
     }
 }
