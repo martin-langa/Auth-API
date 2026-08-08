@@ -2,11 +2,13 @@
   "name": "auth-api",
   "version": "1.0.0",
   "description": "",
-  "main": "/src/server.ts",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "start": "node dist/index.ts",
-    "build": "tsc"
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "build": "prisma generate && tsc",
+    "start": "prisma migrate deploy && node dist/server.js"
   },
   "keywords": [],
   "author": "Martin Langa",
@@ -21,7 +23,6 @@
     "jsonwebtoken": "^9.0.3",
     "pg": "^8.22.0",
     "prisma": "^7.9.1",
-    "tsc": "^2.0.4",
     "zod": "^4.4.3"
   },
   "devDependencies": {
