@@ -1,7 +1,9 @@
 import type { Request, Response } from "express";
 import z from "zod";
 import prisma from "../util/db.js";
-import { hash } from "bcrypt";
+import { compare, hash } from "bcrypt";
+import { sign } from "jsonwebtoken";import { env } from "../util/env.js";
+ 'jsonwebtoken';
 
 class AuthController {
 
@@ -57,6 +59,52 @@ class AuthController {
     }
     
     signiIn = async (req: Request, res: Response) => {
+        try{
 
+            const { email, password } = req.body;
+
+            const isRegistered = await prisma.user.findFirst({
+                where: { email }
+            });
+
+            if(!isRegistered){
+                return res.status(401).json({
+                    success: false,
+                    message: "Password ou Email incorretos"
+                });
+            }
+
+            const isPassword = await compare(password, isRegistered.passwordHash);
+
+            if(!isPassword){
+                return res.status(401).json({
+                    success: false,
+                    message: "Password ou Email incorretos"
+                });
+            }
+
+            const token = sign({
+                id: isRegistered.id,
+                role: isRegistered.role
+            }, env.SECRET_KEY);
+
+            res.cookie("token", token, {
+                httpOnly: true,
+                sameSite: "lax",
+                maxAge: 900000
+            })
+
+            return res.status(200).json({
+                success: true,
+                message: "User logado com sucesso",
+            })
+
+        }catch(error){
+            return res.status(500).json({
+                success: false,
+                message: "Ocorreu um erro no modulo de login",
+                error: error
+            });
+        }
     }
 }
