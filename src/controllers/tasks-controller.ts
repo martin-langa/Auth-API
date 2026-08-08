@@ -33,6 +33,12 @@ class TasksController {
             }
         })
 
+        if (!c) {
+            return res.status(404).json({
+                message: "Category not found"
+            });
+        }
+
         const task = await prisma.task.create({
             data: {
                 title,
