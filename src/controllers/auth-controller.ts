@@ -19,7 +19,7 @@ class AuthController {
                     .trim(),
                 password: z
                     .string()
-                    .min(6, "Password must be at least 6 characters long")
+                    .min(6, "Password must be at least 6 characters long"),
             });
 
             const { username, email, password } = bodySchema.parse(req.body);
@@ -41,7 +41,8 @@ class AuthController {
                 data: {
                     email,
                     passwordHash,
-                    username
+                    username,
+                    role: "USER"
                 }
             });
 
@@ -59,7 +60,7 @@ class AuthController {
         }
     }
     
-    signiIn = async (req: Request, res: Response) => {
+    signIn = async (req: Request, res: Response) => {
         try{
 
             const { email, password } = req.body;
@@ -109,3 +110,5 @@ class AuthController {
         }
     }
 }
+
+export { AuthController };
