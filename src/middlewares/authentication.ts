@@ -24,9 +24,12 @@ export function authenticated(req: Request, res: Response, next: NextFunction) {
             });
         }
 
+
         req.user = {
             id: payload.id,
-            role: payload.role
+            role: payload.role,
+            email: payload.email,
+            username: payload.username
         }
 
         next()

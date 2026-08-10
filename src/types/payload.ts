@@ -1,4 +1,6 @@
 export type payloadType = {
-    id: string
+    id: string,
+    email: string,
+    username: string
     role: "ADMIN" | "USER"
 }

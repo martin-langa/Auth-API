@@ -87,7 +87,9 @@ class AuthController {
 
             const token = jwt.sign({
                 id: isRegistered.id,
-                role: isRegistered.role
+                role: isRegistered.role,
+                email: isRegistered.email,
+                username: isRegistered.username
             } as payloadType , env.SECRET_KEY);
 
             res.cookie("token", token, {
@@ -107,6 +109,22 @@ class AuthController {
                 message: "Ocorreu um erro no modulo de login",
                 error: error
             });
+        }
+    }
+
+    whoAmI = async (req: Request, res: Response) => {
+        try{
+            const user = req.user;
+
+            console.log(JSON.stringify(user));
+
+            return res.status(200).json({
+                success: true,
+                user: user
+            });
+            
+        }catch(err){
+
         }
     }
 }
