@@ -2,6 +2,14 @@ import type { Request, Response } from 'express';
 import z, { success } from 'zod';
 import prisma from '../util/db.js';
 
+type Task = {
+    id: string
+    title: string
+    description: string
+    categoryName: string
+    categoryId: number
+    userId: string
+}
 class TasksController {
 
     create = async (req: Request, res: Response ) => {
@@ -34,11 +42,20 @@ class TasksController {
                 }
             })
 
+            let returnData = {
+                id: "",
+                title,
+                description,
+                categoryName: "",
+                categoryId: 0,
+                userId,
+            }
             let data = {
                 title,
                 description,
                 userId,
-                categoryId: 0
+                categoryId: 0,
+                categoryName: ""
             }
 
             if (!c) {
@@ -49,8 +66,12 @@ class TasksController {
                 });
 
                 data.categoryId = ca.id
+                returnData.categoryId = ca.id
+                returnData.categoryName = ca.name
+                data.categoryName = ca.name
             }else{
                 data.categoryId = c.id;
+                data.categoryName = c.name
             }
 
             
@@ -59,10 +80,12 @@ class TasksController {
                 data
             });
 
+            returnData.id = task.id
+
             return res.status(201).json({
                 success: true,
                 message: "Task criada com sucesso",
-                data: task
+                data: returnData
             })
         }catch(err){
             console.log("Erro no create" + err);
