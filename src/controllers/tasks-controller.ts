@@ -6,61 +6,77 @@ class TasksController {
 
     create = async (req: Request, res: Response ) => {
 
-        const taskSchema = z.object({
-            title: z
-                .string()
-                .min(3, "O titulo deve conter ao menos 3 letras"),
-            description: z
-                .string()
-                .max(250, "A descrição não pode ter mais de 250 caracteres"),
-            category: z.string()
-        });
-
-        if (!req.user) {
-            return res.status(401).json({
-                success: false,
-                message: "Não autenticado"
+        try{
+            const taskSchema = z.object({
+                title: z
+                    .string()
+                    .min(3, "O titulo deve conter ao menos 3 letras"),
+                description: z
+                    .string()
+                    .max(250, "A descrição não pode ter mais de 250 caracteres"),
+                category: z.string()
             });
-        }
 
-        const userId = req.user?.id;
-
-        const { title, description, category } = taskSchema.parse(req.body);
-
-        const c = await prisma.category.findFirst({
-            where: {
-                name: category
+            if (!req.user) {
+                return res.status(401).json({
+                    success: false,
+                    message: "Não autenticado"
+                });
             }
-        })
 
-        if (!c) {
-            return res.status(404).json({
-                message: "Category not found"
-            });
-        }
+            const userId = req.user?.id;
 
-        const task = await prisma.task.create({
-            data: {
+            const { title, description, category } = taskSchema.parse(req.body);
+
+            const c = await prisma.category.findFirst({
+                where: {
+                    name: category
+                }
+            })
+
+            let data = {
                 title,
                 description,
                 userId,
-                categoryId: c.id
+                categoryId: 0
             }
-        });
 
-        return res.status(201).json({
-            success: true,
-            message: "Task criada com sucesso",
-            data: task
-        })
+            if (!c) {
+                const ca = await prisma.category.create({
+                    data: {
+                        name: category
+                    }
+                });
+
+                data.categoryId = ca.id
+            }else{
+                data.categoryId = c.id;
+            }
+
+            
+
+            const task = await prisma.task.create({
+                data
+            });
+
+            return res.status(201).json({
+                success: true,
+                message: "Task criada com sucesso",
+                data: task
+            })
+        }catch(err){
+            console.log("Erro no create" + err);
+        }
     }
 
     listUserTasks = async (req: Request, res: Response ) => {
 
+        console.log(req.user);
+        
         if(!req.user){
             return res.status(401).json({
                 success: false,
-                message: "Unauthorized"
+                message: "Error fetching"
             })
         }
 

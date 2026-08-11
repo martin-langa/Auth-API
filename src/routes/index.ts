@@ -9,5 +9,5 @@ const appRouter = Router();
 appRouter.use("/auth", authRoutes);
 
 appRouter.use(authenticated)
-appRouter.use("/tasks", authorize("USER"), tasksRoutes);
+appRouter.use("/tasks", tasksRoutes);
 export default appRouter;
